@@ -1,36 +1,106 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# LifeDrop Bangladesh (লাইফড্রপ বাংলাদেশ)
+### *Every Drop. Every Life. Every Connection.*
+### *এক ফোঁটা রক্ত, বাঁচুক একটি প্রাণ।*
 
-## Getting Started
+---
 
-First, run the development server:
+## 🩸 Project Overview
+**LifeDrop Bangladesh** is a complete, production-grade national digital blood donation network and management platform built specifically for the People's Republic of Bangladesh. The platform unifies blood donors, patients, accredited hospitals, regional coordinators, and humanitarian organizations across all **8 divisions and 64 districts**.
 
+---
+
+## 🎨 Brand Identity & Design System
+- **Official Brand Colors:**
+  - **Primary Blue:** `#0878D1` (Core brand, primary actions, navigation active states)
+  - **Dark Blue:** `#073B75` (Hero sections, headers, high-contrast text)
+  - **Primary Green:** `#16A34A` (Verified donor badges, success states, verified totals)
+  - **Dark Green:** `#087443` (Dark green accents, high-contrast badges)
+  - **Emergency Red:** `#E53945` (Reserved strictly for emergency requests and critical alerts)
+  - **Background:** `#F8FAFC` (Clean healthcare SaaS background)
+  - **Light Blue:** `#EFF6FF` (Subtle card fills, active states)
+  - **Light Green:** `#F0FDF4` (Verified status chips)
+  - **Text Primary:** `#14213D`
+  - **Text Secondary:** `#64748B`
+
+---
+
+## ⚡ Tech Stack
+- **Framework:** Next.js 16 (App Router), React 19, TypeScript 5
+- **Styling:** Tailwind CSS v4, Lucide React icons
+- **Form Validation:** React Hook Form & Zod
+- **Backend & Database:** Supabase PostgreSQL with Row Level Security (RLS)
+- **Analytics:** Recharts (Nationwide trends & blood group distributions)
+- **Identity & Cryptography:** Tamper-evident SHA-256 QR verification tokens
+- **Internationalization:** First-class dual language support: **Bangla (বাংলা)** and **English (EN)**
+
+---
+
+## 🗺️ Route Architecture
+| Route | Description |
+| :--- | :--- |
+| `/` | Polished Homepage with Hero, Live Search, Stats, Emergency Requests, and ID previews |
+| `/find-donors` | Advanced nationwide search with cascading Division → District → Upazila selectors & privacy gate |
+| `/blood-requests` | Live Emergency Blood Requests board with priority triage (Critical, Urgent, Normal) |
+| `/blood-requests/new` | Emergency blood request submission form with hospital and clinical context |
+| `/blood-requests/[id]` | Request detail, progress tracker, and direct donor response action |
+| `/become-donor` | Comprehensive donor onboarding with DGHS/WHO eligibility attestation and ID card generation |
+| `/verify/id/[token]` | Public digital identity card verification endpoint via scannable QR token |
+| `/verify/id` | Manual digital ID verification lookup |
+| `/verify/certificate` | Public award & service certificate verification endpoint |
+| `/donor/dashboard` | Donor workspace with verified donation counts, 90-day waiting safeguard, and QR ID |
+| `/admin/dashboard` | National and regional administrative portal with two-phase audit verifications |
+| `/about` | Institutional governance, mission, and national blood network principles |
+| `/guidelines` | Bangladesh DGHS and WHO blood donation criteria and deferral guidelines |
+| `/organizations` | Directory of verified blood organizations (BDRCS, Sandhani, Badhan, Quantum, Police Blood Bank) |
+| `/volunteers` | Volunteer registration and task coordination |
+| `/campaigns` | Nationwide blood donation drives and camps |
+| `/faq` | Comprehensive bilingual Frequently Asked Questions |
+| `/contact` | 24/7 hotline and regional coordinator directory |
+| `/privacy` | Data protection framework and double opt-in contact protocol |
+| `/terms` | Terms of service and mandatory hospital screening disclaimer |
+| `/auth/login` | Multi-role authentication with demo portal access |
+| `/auth/register` | User and donor registration |
+
+---
+
+## 🚀 Quick Start Instructions
+
+### 1. Set Active Workspace
+It is recommended to set this directory as your active workspace:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+cd C:\Users\UESR\.gemini\antigravity\scratch\lifedrop-bd
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Install Dependencies
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 3. Connect Supabase (Optional for Production Database)
+1. Create a project at [supabase.com](https://supabase.com).
+2. Run the SQL schema found in `src/lib/supabase/database.sql` in the Supabase SQL Editor.
+3. Copy your project credentials into `.env.local`:
+```env
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+SUPABASE_SERVICE_role_key=your-service-role-key
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+```
+*(Note: If Supabase credentials are not yet configured, LifeDrop Bangladesh operates automatically in interactive local mode with full CRUD, cascading geographical filters, and real QR token validation).*
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 4. Run the Development Server
+```bash
+npm run dev
+```
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## 🛡️ Security & Privacy Features
+1. **Privacy-Preserving Contact Gate:** Donor phone numbers and exact street addresses are masked by default. Requesters must submit a contact request, which donors approve through a double opt-in system.
+2. **Two-Phase Verification:** Donors cannot manually falsify donation totals. Verification is enforced strictly by authorized regional verifiers or database triggers.
+3. **Cryptographic QR Tokens:** Digital ID cards use unguessable random tokens. The public verification endpoint exposes only verified credentials, keeping personal contact information private.
+4. **Medical Resting Safeguard:** Enforces a configurable 90-day waiting period between consecutive whole blood donations in compliance with DGHS Bangladesh guidelines.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+© 2026 LifeDrop Bangladesh Foundation. *Every Drop. Every Life. Every Connection.*
