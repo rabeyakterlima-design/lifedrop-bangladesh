@@ -117,11 +117,17 @@ export function DonorSearchPanel() {
             <select
               value={selectedDistrict}
               onChange={(e) => {
-                setSelectedDistrict(e.target.value);
+                const distId = e.target.value;
+                setSelectedDistrict(distId);
                 setSelectedUpazila("");
+                if (distId) {
+                  const distObj = DISTRICTS.find((d) => d.id === distId);
+                  if (distObj && !selectedDivision) {
+                    setSelectedDivision(distObj.divisionId);
+                  }
+                }
               }}
-              disabled={!selectedDivision && filteredDistricts.length > 20}
-              className="w-full h-12 px-3.5 rounded-xl border border-slate-300 bg-white text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#0878D1] focus:border-transparent transition-all disabled:opacity-50"
+              className="w-full h-12 px-3.5 rounded-xl border border-slate-300 bg-white text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#0878D1] focus:border-transparent transition-all cursor-pointer"
             >
               <option value="">{t.search.selectDistrict}</option>
               {filteredDistricts.map((dist) => (
@@ -143,10 +149,15 @@ export function DonorSearchPanel() {
             <select
               value={selectedUpazila}
               onChange={(e) => setSelectedUpazila(e.target.value)}
-              disabled={!selectedDistrict || filteredUpazilas.length === 0}
-              className="w-full h-12 px-3.5 rounded-xl border border-slate-300 bg-white text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#0878D1] focus:border-transparent transition-all disabled:opacity-50"
+              className="w-full h-12 px-3.5 rounded-xl border border-slate-300 bg-white text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#0878D1] focus:border-transparent transition-all cursor-pointer"
             >
-              <option value="">{t.search.selectUpazila}</option>
+              <option value="">
+                {!selectedDistrict
+                  ? language === "bn"
+                    ? "আগে জেলা নির্বাচন করুন"
+                    : "Select District First"
+                  : t.search.selectUpazila}
+              </option>
               {filteredUpazilas.map((upz) => (
                 <option key={upz.id} value={upz.id}>
                   {language === "bn" ? upz.bnName : upz.name}
