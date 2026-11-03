@@ -27,12 +27,18 @@ export function DonorSearchPanel() {
     return DISTRICTS.filter((d) => d.divisionId === selectedDivision);
   }, [selectedDivision]);
 
-  // Available upazilas based on district selection
+  // Available upazilas based on district or division selection
   const filteredUpazilas = useMemo(() => {
-    if (!selectedDistrict) return [];
-    const dist = DISTRICTS.find((d) => d.id === selectedDistrict);
-    return dist ? dist.upazilas : [];
-  }, [selectedDistrict]);
+    if (selectedDistrict) {
+      const dist = DISTRICTS.find((d) => d.id === selectedDistrict);
+      return dist ? dist.upazilas : [];
+    }
+    if (selectedDivision) {
+      const dists = DISTRICTS.filter((d) => d.divisionId === selectedDivision);
+      return dists.flatMap((d) => d.upazilas);
+    }
+    return DISTRICTS.flatMap((d) => d.upazilas);
+  }, [selectedDistrict, selectedDivision]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -148,16 +154,24 @@ export function DonorSearchPanel() {
             </label>
             <select
               value={selectedUpazila}
-              onChange={(e) => setSelectedUpazila(e.target.value)}
+              onChange={(e) => {
+                const upzId = e.target.value;
+                setSelectedUpazila(upzId);
+                if (upzId && !selectedDistrict) {
+                  const foundDist = DISTRICTS.find((d) =>
+                    d.upazilas.some((u) => u.id === upzId)
+                  );
+                  if (foundDist) {
+                    setSelectedDistrict(foundDist.id);
+                    if (!selectedDivision) {
+                      setSelectedDivision(foundDist.divisionId);
+                    }
+                  }
+                }
+              }}
               className="w-full h-12 px-3.5 rounded-xl border border-slate-300 bg-white text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#0878D1] focus:border-transparent transition-all cursor-pointer"
             >
-              <option value="">
-                {!selectedDistrict
-                  ? language === "bn"
-                    ? "আগে জেলা নির্বাচন করুন"
-                    : "Select District First"
-                  : t.search.selectUpazila}
-              </option>
+              <option value="">{t.search.selectUpazila}</option>
               {filteredUpazilas.map((upz) => (
                 <option key={upz.id} value={upz.id}>
                   {language === "bn" ? upz.bnName : upz.name}

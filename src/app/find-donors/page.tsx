@@ -55,10 +55,16 @@ function FindDonorsContent() {
   }, [divisionId]);
 
   const filteredUpazilas = useMemo(() => {
-    if (!districtId) return [];
-    const dist = DISTRICTS.find((d) => d.id === districtId);
-    return dist ? dist.upazilas : [];
-  }, [districtId]);
+    if (districtId) {
+      const dist = DISTRICTS.find((d) => d.id === districtId);
+      return dist ? dist.upazilas : [];
+    }
+    if (divisionId) {
+      const dists = DISTRICTS.filter((d) => d.divisionId === divisionId);
+      return dists.flatMap((d) => d.upazilas);
+    }
+    return DISTRICTS.flatMap((d) => d.upazilas);
+  }, [districtId, divisionId]);
 
   const fetchDonors = async () => {
     setLoading(true);
@@ -193,16 +199,24 @@ function FindDonorsContent() {
               </label>
               <select
                 value={upazilaId}
-                onChange={(e) => setUpazilaId(e.target.value)}
+                onChange={(e) => {
+                  const upz = e.target.value;
+                  setUpazilaId(upz);
+                  if (upz && !districtId) {
+                    const foundDist = DISTRICTS.find((d) =>
+                      d.upazilas.some((u) => u.id === upz)
+                    );
+                    if (foundDist) {
+                      setDistrictId(foundDist.id);
+                      if (!divisionId) {
+                        setDivisionId(foundDist.divisionId);
+                      }
+                    }
+                  }
+                }}
                 className="w-full h-11 px-3 rounded-xl border border-slate-300 text-sm font-semibold bg-white text-slate-800 focus:ring-2 focus:ring-[#0878D1] focus:outline-none cursor-pointer"
               >
-                <option value="">
-                  {!districtId
-                    ? language === "bn"
-                      ? "আগে জেলা নির্বাচন করুন"
-                      : "Select District First"
-                    : t.search.selectUpazila}
-                </option>
+                <option value="">{t.search.selectUpazila}</option>
                 {filteredUpazilas.map((u) => (
                   <option key={u.id} value={u.id}>
                     {language === "bn" ? u.bnName : u.name}
